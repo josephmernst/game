@@ -1,0 +1,144 @@
+#include <GL/glut.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define USING_MATH_DEFINES
+#include <math.h>
+#include <float.h>
+#include <assert.h>
+
+#include <linux/joystick.h>
+
+#define THETA_STEP 2 //degrees
+#define PHI_STEP   2 //degrees
+
+void init_lighting(void);
+void display(void);
+void keypress(unsigned char key, int x, int y);
+void joystick_func(unsigned int buttonMask, int x, int y, int z);
+
+//Global constants
+float r_max = 3;    //maximum radius of data that was read in
+float r_vis = 3;    //radius used in rendering (so there is space to each side)
+int phi_num, theta_num;
+
+int main(int argc, char **argv){
+  
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+  glutCreateWindow("graphics_test");
+  //glutFullScreen();
+  
+  glutDisplayFunc(display);
+  glutKeyboardFunc(keypress);
+  glutJoystickFunc(joystick_func, 10);
+  //glutInitJoystick("/dev/input/js0");
+  //glutForceJoystickFunc();
+  
+  init_lighting();
+  
+  glMatrixMode(GL_PROJECTION);
+  gluPerspective( /* field of view in degree */ 40.0,
+  /* aspect ratio */ 1.0,
+    /* Z near */ 1.0, /* Z far */ 2*r_vis);
+  glMatrixMode(GL_MODELVIEW);
+ 
+  gluLookAt(0.0, 0.0, r_vis,  /* eye is at (0,0,r_vis) */
+    0.0, 0.0, 0.0,      /* center is at (0,0,0) */
+    0.0, 1.0, 0.);      /* up is in positive Y direction */
+  
+  glutMainLoop();
+  
+  return 0;
+}
+
+
+void keypress(unsigned char key, int x, int y){
+  switch (key) {
+  case 27:
+    exit(0);
+    break;
+  case 'l':
+    theta_num -= 1;
+    display();
+    break;
+  case 'r':
+    theta_num +=1;
+    display();
+    break;
+  case 'u':
+    phi_num -= 1;
+    display();
+    break;
+  case 'd':
+    phi_num += 1;
+    display();
+    break;
+  }
+}
+
+void joystick_func(unsigned int buttonMask, int x, int y, int z){
+  printf("joystick function\n");
+  //printf("joystick function: %d\n", buttonMask);
+  //if(buttonMask & GLUT_JOYSTICK_BUTTON_A) {
+  //printf("button A is pressed ");
+  //}
+  if(buttonMask){
+    printf("button pressed: %d\n", buttonMask);
+  }
+}
+
+void display(void){
+  int i, j;
+  float dist = 0;
+
+  //Clear screen
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  
+  glPushMatrix();
+  glRotatef(theta_num*THETA_STEP, 0.0, 1.0, 0.0);
+  glRotatef(phi_num*PHI_STEP, 1.0, 0.0, 0.0);
+  
+  glutSolidCube(1.0);
+  
+  glEnd();
+  
+  glPopMatrix();
+
+  glutSwapBuffers();
+}
+
+void init_lighting(void){
+  float no_mat[] = {0.0f, 0.0f, 0.0f, 1.0f};
+  float mat_ambient[] = {0.7f, 0.7f, 0.7f, 1.0f};
+  float mat_ambient_color[] = {0.8f, 0.8f, 0.2f, 1.0f};
+  float mat_diffuse[] = {0.1f, 0.5f, 0.8f, 1.0f};
+  float mat_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  float no_shininess = 0.0f;
+  float low_shininess = 5.0f;
+  float high_shininess = 100.0f;
+  float mat_emission[] = {0.3f, 0.2f, 0.2f, 0.0f};
+  
+  GLfloat light_position[] = { 0.0, 0.0, r_max, 0.0 };
+
+  float ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
+  float diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  float specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  float position[] = {1.0f, 1.0f, 0.3f, 0.0f};
+   
+  glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+  //glLightfv(GL_LIGHT0, GL_POSITION, position);
+  /*
+  glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialf(GL_FRONT, GL_SHININESS, low_shininess);
+  glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
+  */
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_DEPTH_TEST);
+  
+}

@@ -1,0 +1,7 @@
+#include "Joystick.h"
+
+int main(int argc, char** argv){
+  Joystick joystick;
+  
+  return 0;
+}
