@@ -1,5 +1,9 @@
+#include "flyingObject.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 void check_vec(float* x){
-  if(sizeof(x)/sizeof(float) != 2){
+  if(sizeof(x)/sizeof(float) != 3){
     printf("The input vector didn't have 3 components.\n");
     printf("  sizeof(x) = %d\n", (int)sizeof(x));
     printf("  sizeof(float) = %d\n", (int)sizeof(float));
@@ -7,27 +11,6 @@ void check_vec(float* x){
   }
 }
 
-class flyingObject{
-  float* position;
-  float* velocity;
-  float* acceleration;
-  float* orientation;
-  
-public:
-  flyingObject();
-  flyingObject(float* s);
-  flyingObject(float* s, float* axis);
-  flyingObject(float* s, float* axis, float* v);
-  flyingObject(float* s, float* axis, float* v, float* a);
-  ~flyingObject();
-  
-  void setPosition(float*);
-  void setOrientation(float*);
-  void setVelocity(float*);
-  void setAcceleration(float*);
-  
-  void print(void);
-};
 
 //No argument constructor
 flyingObject::flyingObject(){
