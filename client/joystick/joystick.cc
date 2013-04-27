@@ -35,6 +35,7 @@ cJoystick::~cJoystick() {
 
 void* cJoystick::loop(void *obj) {
 	while (reinterpret_cast<cJoystick *>(obj)->active) reinterpret_cast<cJoystick *>(obj)->readEv();
+	return 0;
 }
 
 void cJoystick::readEv() {
@@ -70,5 +71,8 @@ joystick_position cJoystick::joystickPosition(int n) {
 }
 
 bool cJoystick::buttonPressed(int n) {
+  if (joystick_st->button.size()==0){
+		return false;
+  }
 	return n > -1 && n < buttons ? joystick_st->button[n] : 0;
 }

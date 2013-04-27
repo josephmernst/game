@@ -1,1 +1,5 @@
 *~
+*.o
+client/client
+client/graphics_test
+client/test

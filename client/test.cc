@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "flyingObject.cc"
+#include "flyingObject.h"
 
 int main(int argc, char **argv){
   flyingObject view;

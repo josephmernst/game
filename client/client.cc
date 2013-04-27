@@ -3,9 +3,8 @@
 #include <GL/glfw.h>
 #include <math.h>
 #include <string.h>
-
-#include "functions/geometry.cc"
-#include "flyingObject.cc"
+#include "functions/geometry.h"
+#include "flyingObject.h"
  
 void Init(void);
 void Shut_Down(int return_code);

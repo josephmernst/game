@@ -1,17 +1,28 @@
-LIBS=-lglut -lGL -lGLU
+LIBS=-lglut -lGL -lGLU -lglfw -lpthread
+CFLAGS=-g -Wall
+APPS=graphics_test client joy_test functions/test test
+OBJS=joystick/joystick.o flyingObject.o
+default: $(APPS)
 
-default: graphics_test client
+test:test.cc $(OBJS)
+	g++ $(CFLAGS) $(LIBS) $(OBJS) test.cc -o test
 
-graphics_test:graphics_test.cc
-	g++ $(LIBS) graphics_test.cc -o graphics_test
+graphics_test:graphics_test.cc $(OBJS)
+	g++ $(CFLAGS) $(LIBS) $(OBJS) graphics_test.cc -o graphics_test
 
-client:client.cc joystick/joystick.o
-	g++ $(LIBS) client.cc joystick/joystick.o -o client -lpthread
+client:client.cc $(OBJS)
+	g++ $(CFLAGS) $(LIBS) $(OBJS) client.cc -o client
 
-joy_test:joystick/joystick.o
-	g++ $(LIBS) joy_test.cc joystick/joystick.o -o joy_test -lpthread
+joy_test:$(OBJS)
+	g++ $(CFLAGS) $(LIBS) $(OBJS) joy_test.cc  -o joy_test -lpthread
 
-joystick/joystick.o:joystick/joystick.cc joystick/joystick.h
-	g++ $(LIBS) -c joystick/joystick.cc -o joystick/joystick.o
+
+joystick/%.o:joystick/%.cc joystick/%.h
+	g++ $(CFLAGS) $< -c -o $@
+functions/%.o:functions/%.cc functions/%.h
+%.o:%.cc %.h
+	g++ $(CFLAGS) $< -c  
+functions/test: functions/test.cc $(OBJS)
+	g++ $(CFLAGS) $(LIBS) $(OBJS) functions/test.cc -o functions/test
 clean:
-	-rm graphic_test client joystick/joystick.o
+	-rm $(APPS) $(OBJS)
