@@ -5,7 +5,7 @@
 #define PI 3.14159
 #define PI_2 1.57079
 
-#include "geometry.cc"
+#include "geometry.h"
 
 int main(int argc, char **argv){
   float x[3] = {1, 0, 0};

@@ -1,5 +1,7 @@
 #include "geometry.h"
-
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 void norm(float *x, int x_length){
   float x_norm = 0;
   

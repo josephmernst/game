@@ -1,7 +1,7 @@
 LIBS=-lglut -lGL -lGLU -lglfw -lpthread
 CFLAGS=-g -Wall
 APPS=graphics_test client functions/test test
-OBJS=flyingObject.o
+OBJS=flyingObject.o functions/geometry.o
 default: $(APPS)
 
 test:test.cc $(OBJS)
@@ -20,6 +20,7 @@ joy_test:$(OBJS)
 joystick/%.o:joystick/%.cc joystick/%.h
 	g++ $(CFLAGS) $< -c -o $@
 functions/%.o:functions/%.cc functions/%.h
+	g++ $(CFLAGS) $< -c -o $@
 %.o:%.cc %.h
 	g++ $(CFLAGS) $< -c  
 functions/test: functions/test.cc $(OBJS)
