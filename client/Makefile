@@ -1,7 +1,7 @@
 LIBS=-lglut -lGL -lGLU -lglfw -lpthread
 CFLAGS=-g -Wall
-APPS=graphics_test client joy_test functions/test test
-OBJS=joystick/joystick.o flyingObject.o
+APPS=graphics_test client functions/test test
+OBJS=flyingObject.o
 default: $(APPS)
 
 test:test.cc $(OBJS)
