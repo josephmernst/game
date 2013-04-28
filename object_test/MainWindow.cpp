@@ -37,14 +37,14 @@ void move_current_object(int key){
 		if (move_mode==MOVE_MODE_TRANSLATE){
 			obj->move_forward(.2);
 		} else if (move_mode==MOVE_MODE_ROTATE){
-			obj->turn_up(2);
+			obj->turn_up(-2);
 		}
 		break;
 	case GLUT_KEY_DOWN:
 		if (move_mode==MOVE_MODE_TRANSLATE){
 			obj->move_forward(-.2);
 		} else if (move_mode==MOVE_MODE_ROTATE){
-			obj->turn_up(-2);
+			obj->turn_up(2);
 		}
 		break;
 	case GLUT_KEY_RIGHT:
@@ -131,9 +131,11 @@ void display_overhead_window(void){
 								 1.0,  // Z near
 								 50     // Z far
 								 );
+	
 	gluLookAt(0.0, 0.0, 10, // x,y,z eye location
 						0.0, 0.0, 0.0, // location to look at
 						1.0, 0.0, 0.0); // "up" vector
+	
 	draw_objects();
 	glutSwapBuffers();
 	
@@ -149,21 +151,23 @@ void display_player_window(void){
 								 1.0,  // Z near
 								 50     // Z far
 								 );
-	gluLookAt(0.0, -10.0, 0, // x,y,z eye location
-						0.0, 0.0, 0.0, // location to look at
+	glMatrixMode(GL_MODELVIEW_MATRIX);
+	gluLookAt(0.0, 0.0, 0, // x,y,z eye location
+						0.0, 1.0, 0.0, // location to look at
 						0.0, 0.0, 1.0); // "up" vector
+		
 	draw_objects(camera->orientation);
 	glutSwapBuffers();
 }
-void generic_mouse_click(int button, int state, int x, int y){
+void generic_mouse_click(int button, int state, int x, int y, double * camera){
 	float depth;
 	if (button!=0 || state!=0){
 		return;
 	}
 	glReadPixels(x,main_window_height-y,1,1,GL_DEPTH_COMPONENT,GL_FLOAT, & depth);
-	//printf("overhead_window mouse: %d,%d,%d,%d,%f\n",button,state,x,y,depth);
-	vector<double> realxyz=screen_to_world(x,y,depth);
-	//printf("real x,y,z:%f,%f,%f\n",realxyz[0],realxyz[1],realxyz[2]);
+	// printf("overhead_window mouse: %d,%d,%d,%d,%f\n",button,state,x,y,depth);
+	vector<double> realxyz=screen_to_world(x,y,depth,camera);
+	// printf("real x,y,z:%f,%f,%f\n",realxyz[0],realxyz[1],realxyz[2]);
 	
 	double min_dist=100;
 	int min_ind=-1;
@@ -196,13 +200,13 @@ void generic_mouse_click(int button, int state, int x, int y){
 void mouse_overhead_window(int button, int state, int x, int y){
 	int curwin=glutGetWindow();
 	glutSetWindow(sub_window_overhead);
-	generic_mouse_click(button,state,x,y);
+	generic_mouse_click(button,state,x,y,NULL);
 	glutSetWindow(curwin);
 }
 void mouse_player_window(int button, int state, int x ,int y){
 	int curwin=glutGetWindow();
 	glutSetWindow(sub_window_player);
-	generic_mouse_click(button,state,x,y);
+	generic_mouse_click(button,state,x,y,camera->orientation);
 	glutSetWindow(curwin);
 }
 

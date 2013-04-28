@@ -40,6 +40,7 @@ void Object::turn_up(double x){      rotate(x,1,0,0);}
 void Object::rotate(double angle, double x, double y, double z){
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
+	//glLoadIdentity();
 	glLoadMatrixd(orientation);
 	glRotated(angle,x,y,z);
 	glGetDoublev(GL_MODELVIEW_MATRIX,orientation);

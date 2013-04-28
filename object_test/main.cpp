@@ -18,7 +18,7 @@ int main(int argc, char * argv[]){
 	
 	init_main_window();
 	objects.clear();
-
+	objects.push_back(new Object());
 	for (int i=-2;i<=2;i++){
 		for (int j=-2;j<=2;j++){
 			glMatrixMode(GL_MODELVIEW);
@@ -27,7 +27,7 @@ int main(int argc, char * argv[]){
 			objects.push_back(new Pyramid());
 		}
 	}
-
+	camera->move_forward(-10);
 	//display_main_window();
 	glutMainLoop();
 	

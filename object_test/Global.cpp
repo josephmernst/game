@@ -1,9 +1,9 @@
 #include "Global.h"
 #include <GL/glut.h>
-
-vector<double> screen_to_world(int x, int y, float depth){
+#include "Object.h"
+vector<double> screen_to_world(int x, int y, float depth, double * camera){
 	vector<double> realxyz;
-
+	double inv[16];
 	// Initialize output vector
 	realxyz.clear();
 	realxyz.reserve(3);
@@ -18,7 +18,17 @@ vector<double> screen_to_world(int x, int y, float depth){
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
 	double projection[16];
 	glGetDoublev(GL_PROJECTION_MATRIX, projection);
-
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	if (camera){
+		gluInvertMatrix(camera,inv);
+		glMultMatrixd(inv);
+	}
+	glMultMatrixd(modelview);
+	glGetDoublev(GL_MODELVIEW_MATRIX,modelview);
+	glPopMatrix();
 	// Perform the "unprojection"
 	gluUnProject(x,main_window_height-y,depth,modelview,projection,viewport,&realxyz[0],&realxyz[1],&realxyz[2]);
 	realxyz[0]=realxyz[0];
