@@ -18,12 +18,15 @@ int main(int argc, char * argv[]){
 	
 	init_main_window();
 	objects.clear();
-	objects.push_back(new Pyramid());
-	glTranslatef(2,0,0);
-	objects.push_back(new Object());
-	glTranslatef(2,0,0);
-	objects.push_back(new Object());
-	glTranslatef(-4,0,0);
+
+	for (int i=-2;i<=2;i++){
+		for (int j=-2;j<=2;j++){
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glTranslatef(2*i,2*j,-2);
+			objects.push_back(new Pyramid());
+		}
+	}
 
 	//display_main_window();
 	glutMainLoop();

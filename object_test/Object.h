@@ -20,9 +20,10 @@ class Object{
 	void turn_up(double x);
 	bool selected;
 	vector<double> get_position();
-
- protected:
+	
 	double orientation[16];
+	
+ protected:
 	void translate(double x, double y, double z);
 	void rotate(double angle, double x, double y,double z);
 	float min(float a, float b);

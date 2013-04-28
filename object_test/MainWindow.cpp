@@ -10,9 +10,10 @@ int sub_window_overhead;
 int sub_window_player;
 int main_window_width;
 int main_window_height;
+
 move_mode_t move_mode=MOVE_MODE_TRANSLATE;
 int object_ind=-1;
-
+Object * camera;
 void idle(void){
 	int curwin=glutGetWindow();
 	glutSetWindow(main_window);
@@ -25,51 +26,58 @@ void idle(void){
 }
 
 void move_current_object(int key){
-	if (object_ind<0 || object_ind>=(int)objects.size()){
-		return;
+	Object * obj=NULL;
+	if (object_ind>=0){
+		obj=objects[object_ind];
+	} else {
+		obj=camera;
 	}
 	switch(key){
 	case GLUT_KEY_UP:
 		if (move_mode==MOVE_MODE_TRANSLATE){
-			objects[object_ind]->move_forward(.2);
+			obj->move_forward(.2);
 		} else if (move_mode==MOVE_MODE_ROTATE){
-			objects[object_ind]->turn_up(2);
+			obj->turn_up(2);
 		}
 		break;
 	case GLUT_KEY_DOWN:
 		if (move_mode==MOVE_MODE_TRANSLATE){
-			objects[object_ind]->move_forward(-.2);
+			obj->move_forward(-.2);
 		} else if (move_mode==MOVE_MODE_ROTATE){
-			objects[object_ind]->turn_up(-2);
+			obj->turn_up(-2);
 		}
 		break;
 	case GLUT_KEY_RIGHT:
 		if (move_mode==MOVE_MODE_TRANSLATE){
-			objects[object_ind]->move_right(.2);
+			obj->move_right(.2);
 		} else if (move_mode==MOVE_MODE_ROTATE){
-			objects[object_ind]->roll_right(2);
+			obj->roll_right(2);
 		}
 		break;
 	case GLUT_KEY_LEFT:
 		if (move_mode==MOVE_MODE_TRANSLATE){
-			objects[object_ind]->move_right(-.2);
+			obj->move_right(-.2);
 		} else if (move_mode==MOVE_MODE_ROTATE){
-			objects[object_ind]->roll_right(-2);
+			obj->roll_right(-2);
 		}
 		break;
 	default:
 		break;
 	}
 	glutPostRedisplay();
-	//display_main_window();
 }
 
+
+
+void special_generic(int key, int x, int y){
+	move_current_object(key);
+}
 
 void special_overhead_window(int key, int x, int y){
-	move_current_object(key);
+	special_generic(key,x,y);
 }
 void special_player_window(int key, int x, int y){
-	move_current_object(key);
+	special_generic(key,x,y);
 }
 
 void generic_keypress(unsigned char key, int x ,int y){
@@ -94,8 +102,15 @@ void keypress_overhead_window(unsigned char key, int x, int y){
 	
 }
 
-void draw_objects(){
+void draw_objects(double * orientation){
+	glMatrixMode(GL_MODELVIEW);
+	double inv[16];
 	for (unsigned int i=0;i<objects.size();i++){
+		glLoadIdentity();
+		if (orientation){
+			gluInvertMatrix(orientation,inv);
+			glMultMatrixd(inv);
+		}
 		objects[i]->draw();
 	}
 }
@@ -116,7 +131,7 @@ void display_overhead_window(void){
 								 1.0,  // Z near
 								 50     // Z far
 								 );
-	gluLookAt(0.0, 0.0, 5, // x,y,z eye location
+	gluLookAt(0.0, 0.0, 10, // x,y,z eye location
 						0.0, 0.0, 0.0, // location to look at
 						1.0, 0.0, 0.0); // "up" vector
 	draw_objects();
@@ -129,7 +144,7 @@ void display_player_window(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	gluPerspective(50.0, // field of view in degrees
+	gluPerspective(90.0, // field of view in degrees
 								 1.0,  // aspect ratio
 								 1.0,  // Z near
 								 50     // Z far
@@ -137,7 +152,7 @@ void display_player_window(void){
 	gluLookAt(0.0, -10.0, 0, // x,y,z eye location
 						0.0, 0.0, 0.0, // location to look at
 						0.0, 0.0, 1.0); // "up" vector
-	draw_objects();
+	draw_objects(camera->orientation);
 	glutSwapBuffers();
 }
 void generic_mouse_click(int button, int state, int x, int y){
@@ -246,10 +261,11 @@ void init_main_window(){
 	glutDisplayFunc(display_main_window);
 	glutSpecialFunc(special_player_window);
 	//sub_window_player=glutCreateSubWindow(main_window,main_window_width/2,0,main_window_width/2,main_window_height);
-
+	camera=new Object();
 	init_overhead_window();
 	init_player_window();
-
+	glLoadIdentity();
+	
 	
 }
 

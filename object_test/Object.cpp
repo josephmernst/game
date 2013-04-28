@@ -66,7 +66,8 @@ float Object::min(float a, float b){
 
 void Object::draw(){
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(orientation);
+	//glPushMatrix();
+	glMultMatrixd(orientation);
 	float blue[4]  = {0,0,.5,1};
 	
 	if (selected){
@@ -78,11 +79,13 @@ void Object::draw(){
 	glColor4fv(blue);
 
 	glutSolidCube(1.0);
+	//glPopMatrix();
 }
 	
 void Object::set_orientation(const double * new_orientation){
 	memcpy(orientation,new_orientation,sizeof(double)*16);
 }	
+
 
 vector<double> Object::get_position(){
 	vector<double> position;

@@ -18,7 +18,8 @@ Pyramid::Pyramid(const Pyramid & orig){
 
 void Pyramid::draw(){
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(orientation);
+	glPushMatrix();
+	glMultMatrixd(orientation);
 	float red[4]   = {.5,0,0,1};
 	float blue[4]  = {0,0,.5,1};
 	float green[4] = {0,.5,0,1};
@@ -69,5 +70,5 @@ void Pyramid::draw(){
 	glVertex3f(0,.5,0);
 	
 	glEnd();
-
+	glPopMatrix();
 }
