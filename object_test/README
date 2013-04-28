@@ -1,0 +1,21 @@
+
+main.cpp: the main function
+MainWindow.{h,cpp}: manages and displays the objects
+Object.{h,cpp}: Each object is stored as the class defined here
+Pyramid.Ph,cpp}:An example of inheriting from Object
+
+Run object_test
+
+Then click on one of the objects
+Use arrow keys to move object forward, back, left and right
+Press 'r' to go into rotation mode
+Then up-arrow is tilt up
+     down-arrow is tilt down
+     right-arrow is roll right	
+		 left-arror is roll left
+
+You can then press 't' to go into translational mode
+
+Click the object to choose which object you are moving
+
+

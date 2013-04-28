@@ -3,3 +3,4 @@
 client/client
 client/graphics_test
 client/test
+object_test/object_test
